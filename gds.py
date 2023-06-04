@@ -5,10 +5,6 @@ import aiohttp
 from http.cookies import SimpleCookie
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-
 from constants import vals
 
 # Headers to spoof looking like the Genesis login website
