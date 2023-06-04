@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, request
 from gds import getGrades
-import firebase_admin
 
 app = Flask(__name__)
 
