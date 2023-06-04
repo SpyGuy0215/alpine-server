@@ -1,6 +1,5 @@
 import requests
 from requests.utils import quote as encodeURL
-import asyncio
 import aiohttp
 from http.cookies import SimpleCookie
 from urllib.parse import urlparse
