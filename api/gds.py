@@ -5,7 +5,7 @@ import aiohttp
 from http.cookies import SimpleCookie
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
-from constants import vals
+from api.constants import vals
 
 # Headers to spoof looking like the Genesis login website
 global_headers = { 
