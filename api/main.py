@@ -15,6 +15,9 @@ async def gradebook():
     response = await getGrades(username, password)
     return response
 
+if __name__ == '__main__':
+    app.run()
+
 
 
 
