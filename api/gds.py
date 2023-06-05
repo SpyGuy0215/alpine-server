@@ -4,12 +4,12 @@ import aiohttp
 from http.cookies import SimpleCookie
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
-from api.constants import vals
+from constants import vals
 
-# Headers to spoof looking like the Genesis login website
+# Headers to spoof looking like a genuine browser on the login website
 global_headers = { 
     'Content-Type': 'application/x-www-form-urlencoded',
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/601.3.9 (KHTML, like Gecko) Version/9.0.2 Safari/601.3.9'
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/113.0'
 }
 
 async def genesis_request(session, method, *args, **kwargs):
@@ -78,23 +78,31 @@ async def login(username, password):
     return [student_id, token]
 
 async def getGrades(username, password):
-    student_id, token = await login(username, password)
-    if student_id == 0 or token == 0:
-        return "Failure"
+    login_result = await login(username, password)
+
+    # Parse to see if there are any login errors; if not, return id and token
+    if login_result == None:
+        # If login fails (NoneType returned), return a 401 error
+        return "401 Unauthorized"
+    else:
+        student_id = login_result[0]
+        token = login_result[1]
     
+    # Take the verification cookie and save it
     cookies = {'JSESSIONID': token}
+
+    # Make a request to the gradebook
     url = vals['domains']['MTSD']['base'] + vals['domains']['MTSD']['gradebook'] + student_id + '&action=form'
     grade_page = requests.get(url, headers=global_headers, cookies=cookies)
 
+    # Parse the HTML to get the grades
     soup = BeautifulSoup(grade_page.text, 'html.parser')
     table = soup.find('table', {'class': 'list'})
     rows = table.find_all('tr')
 
-    # The cell displaying the grade in genesis is a seperate table,
-    # So we need to parse out the grade table as it is rendundant
+    # Remove the first row (headers) and every other row (separate grade table)
     rows.pop(0)
     rows = rows[::2]
-    
 
     grades = []
     for row in rows:
