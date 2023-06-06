@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from gds import getGrades
+from api.gds import getGrades
 
 app = Flask(__name__)
 
