@@ -3,8 +3,10 @@ from requests.utils import quote as encodeURL
 import aiohttp
 from http.cookies import SimpleCookie
 from urllib.parse import urlparse
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString
+import re
 from api.constants import vals
+# from constants import vals # TODO: COMMENT OUT BEFORE PUSHING TO GIT
 
 # Headers to spoof looking like a genuine browser on the login website
 global_headers = { 
@@ -97,33 +99,19 @@ async def getGrades(username, password):
 
     # Parse the HTML to get the grades
     soup = BeautifulSoup(grade_page.text, 'html.parser')
-    table = soup.find('table', {'class': 'list'})
-    rows = table.find_all('tr')
-
-    # Remove the first row (headers) and every other row (separate grade table)
-    rows.pop(0)
-    rows = rows[::2]
+    class_grades_container = soup.find('div', {'class': 'itemContainer'})
 
     grades = []
-    for row in rows:
+    for element in class_grades_container:
         class_info = {}
-        cells = row.find_all('td')
-        cells = cells[0:3]
-
-        cell_dev = []
-        for i in range(len(cells)):
-            cell_dev.append(cells[i].text.strip().split('\n')[0].split('\r')[0])
-        print(cell_dev)
-
-
-        for i in range(len(cells)):
-            cells[i] = cells[i].text.strip()
-            cell_info = cells[i].split('\n')[0].split('\r')[0]
-            if i == 0:
-                class_info['class'] = cell_info
-            elif i == 1:
-                class_info['teacher'] = cell_info
-            elif i == 2:
-                class_info['grade'] = cell_info
-        grades.append(class_info)
+        if not isinstance(element, NavigableString):
+            span_list = element.find_all('span')
+            if len(span_list) == 1:
+                class_info['course_name'] = span_list[0].text.strip()
+                class_info['grade'] = 'No grade yet'
+            else:
+                class_info['course_name'] = span_list[1].text.strip()
+                class_info['grade'] = span_list[0].text.strip()
+            grades.append(class_info)
+                
     return grades
