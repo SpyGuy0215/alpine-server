@@ -1,26 +1,25 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request
 from api.gds import getGrades
-# from gds import getGrades # TODO: Comment this out when pushing to GIT!
 
 app = Flask(__name__)
 
-@app.route('/')
+
+@app.route("/")
 def index():
     # Return a 200 code to show all systems are operational
-    return 'Server is online'
+    return "Server is online"
 
-@app.route('/gradebook')
+
+@app.route("/gradebook")
 async def gradebook():
-    username = request.args.get('username')
-    password = request.args.get('password')
+    username = request.args.get("username")
+    password = request.args.get("password")
     response = await getGrades(username, password)
     return response
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app.run()
-
-
-
 
 
 # app = Flask(__name__)
