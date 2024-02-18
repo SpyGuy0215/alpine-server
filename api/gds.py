@@ -47,6 +47,9 @@ async def login(username, password):
     token = 0
 
     proxy_req = requests.get("http://localhost:3000/get-proxies").text
+    if proxy_req is None:
+        print("Error getting proxies, cancelling request")
+        return
 
     proxies = {"http": proxy_req}
     print(proxy_req)
