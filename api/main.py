@@ -1,5 +1,6 @@
 from flask import Flask, request
 from api.gds import getGrades
+from api.proxy import refresh_proxies, get_random_proxies
 
 app = Flask(__name__)
 
@@ -16,6 +17,17 @@ async def gradebook():
     password = request.args.get("password")
     response = await getGrades(username, password)
     return response
+
+
+@app.route("/refresh-proxy")
+async def proxyTest():
+    status = await refresh_proxies()
+    return status
+
+@app.route("/get-proxies")
+async def getProxies():
+    proxies = await get_random_proxies()
+    return proxies
 
 
 if __name__ == "__main__":

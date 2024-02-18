@@ -1,4 +1,3 @@
-from ast import literal_eval
 import requests
 from requests.utils import quote as encodeURL
 import aiohttp
@@ -6,6 +5,8 @@ from http.cookies import SimpleCookie
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup, NavigableString
 from api.constants import vals
+
+# from constants import vals # TODO: COMMENT OUT BEFORE PUSHING TO GIT
 
 # Headers to spoof looking like a genuine browser on the login website
 global_headers = {
@@ -47,12 +48,6 @@ async def login(username, password):
     student_id = 0
     token = 0
 
-    proxy_req = requests.get('http://localhost:3000/get-proxies').text
-
-    proxies = {"http": proxy_req}
-    print(proxy_req)
-    print('Routing through: ' + proxy_req)
-
     async with aiohttp.ClientSession(
         connector=aiohttp.TCPConnector(limit=64, ssl=False)
     ) as session:
@@ -87,7 +82,6 @@ async def login(username, password):
                 verify_res.headers["Location"],
                 headers=global_headers,
                 cookies=cookie_dict,
-                proxies=proxies,
             )
             split_url = urlparse(log_res.url)
             student_id = split_url.query.split("&")[2].split("=")[1]
