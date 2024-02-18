@@ -24,6 +24,7 @@ async def proxyTest():
     status = await refresh_proxies()
     return status
 
+
 @app.route("/get-proxies")
 async def getProxies():
     proxies = await get_random_proxies()

@@ -47,11 +47,11 @@ async def login(username, password):
     student_id = 0
     token = 0
 
-    proxy_req = requests.get('http://localhost:3000/get-proxies').text
+    proxy_req = requests.get("http://localhost:3000/get-proxies").text
 
     proxies = {"http": proxy_req}
     print(proxy_req)
-    print('Routing through: ' + proxy_req)
+    print("Routing through: " + proxy_req)
 
     async with aiohttp.ClientSession(
         connector=aiohttp.TCPConnector(limit=64, ssl=False)
