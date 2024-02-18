@@ -1,4 +1,3 @@
-from ast import literal_eval
 import requests
 from requests.utils import quote as encodeURL
 import aiohttp
