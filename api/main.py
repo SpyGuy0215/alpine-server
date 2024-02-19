@@ -4,6 +4,8 @@ from api.proxy import refresh_proxies, get_random_proxies
 
 app = Flask(__name__)
 
+print("Initializing server...")
+
 
 @app.route("/")
 def index():
