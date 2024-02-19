@@ -46,7 +46,7 @@ async def login(username, password):
     student_id = 0
     token = 0
 
-    proxy_req = requests.get("http://localhost:3000/get-proxies").text
+    proxy_req = requests.get("http://alpine-server-dev.vercel.app/get-proxies").text
     if proxy_req is None:
         print("Error getting proxies, cancelling request")
         return
